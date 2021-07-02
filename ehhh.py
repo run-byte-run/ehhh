@@ -1,14 +1,25 @@
 import argparse
+import sys
 from glob import glob
 import importlib
 import logging
 from os import path
 
 from colorama import init as colorama_init
+from termcolor import cprint
 
 from lib.data_loader import DataLoader
 from lib.ehhh_attack import EhhhAttack
 from lib.infected_requester import InfectedRequester
+
+BANNER = """                                                                                                                                     
+ _______  __    __   __    __   __    __  
+|   ____||  |  |  | |  |  |  | |  |  |  | 
+|  |__   |  |__|  | |  |__|  | |  |__|  | 
+|   __|  |   __   | |   __   | |   __   | 
+|  |____ |  |  |  | |  |  |  | |  |  |  | 
+|_______||__|  |__| |__|  |__| |__|  |__| 
+"""
 
 
 def get_allow_attack() -> list:
@@ -50,6 +61,12 @@ if __name__ == '__main__':
                        help='Destination urls from file.')
     parser.add_argument('--attack', type=str, nargs='+', default='all', choices=get_allow_attack() + ['all'],
                         help='The attack names.')
+
+    if len(sys.argv) == 1:
+        cprint(BANNER, 'cyan')
+        parser.print_help()
+        sys.exit(1)
+
     args = parser.parse_args()
 
     headers = dict([x.replace(' ', '').split(':') for x in args.header])

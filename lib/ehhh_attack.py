@@ -33,16 +33,27 @@ class EhhhAttack:
 
             task = self._q.get()
             try:
+                self._print_remaining_task()
                 task.execute()
             except Exception as e:
                 logging.warning(e)
             finally:
                 self._q.task_done()
 
+    # @todo: do it better
+    def _print_remaining_task(self):
+        qsize = self._q.qsize()
+        if qsize % 100 == 0:
+            cprint(f'Remaining tasks: {qsize}', 'cyan')
+
     def run(self, urls: list, attacks: list) -> None:
+        cprint(f'Ehhh just run', 'cyan')
+
         for attack in attacks:
             for task in attack.generate_task(urls):
                 self._q.put(task)
+
+        cprint(f'Task counts: {self._q.qsize()}', 'cyan')
 
         for _ in range(self.settings.get('thread', 10)):
             Thread(target=self.do_task, daemon=True).start()
