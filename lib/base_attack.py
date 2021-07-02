@@ -1,8 +1,14 @@
 from abc import ABC, abstractmethod
+from http import client
+import re
+
 from requests import Response
 
 import lib.ehhh_attack
 from lib.infected_requester import InfectedRequester
+
+# monkey patch to allow space in header
+client._is_legal_header_name = re.compile(rb'[^:][^:\r\n]*').fullmatch
 
 
 class BaseAttack(ABC):
@@ -13,6 +19,11 @@ class BaseAttack(ABC):
         [rr, ir] = self.infected_requester.get(url, headers)
 
         return self._is_vulnerable(rr, ir)
+
+    @staticmethod
+    @abstractmethod
+    def get_vulnerable_text():
+        pass
 
     @abstractmethod
     def generate_task(self, urls: list) -> list:
@@ -33,16 +44,20 @@ class WordlistAttack(BaseAttack, ABC):
         self._wordlist = kwargs['wordlist']
         self._natural_responses = {}
 
+    @staticmethod
+    def get_vulnerable_text():
+        return 'Responses length missmatch!'
+
     def generate_task(self, urls: list) -> list:
         tasks = []
         for host in self._wordlist:
             for url in urls:
-                tasks.append(lib.ehhh_attack.EhhhAttackTask(self, url, self._get_inject_headers(host)))
+                tasks.append(lib.ehhh_attack.EhhhAttackTask(self, url, self._get_inject_headers(url, host)))
         return tasks
 
     @staticmethod
     @abstractmethod
-    def _get_inject_headers(host: str) -> dict:
+    def _get_inject_headers(url: str, host: str) -> dict:
         pass
 
     def _is_vulnerable(self, regular_response: Response, infected_response: Response) -> bool:

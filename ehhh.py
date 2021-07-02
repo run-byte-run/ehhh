@@ -1,7 +1,10 @@
 import argparse
 from glob import glob
 import importlib
+import logging
 from os import path
+
+from colorama import init as colorama_init
 
 from lib.data_loader import DataLoader
 from lib.ehhh_attack import EhhhAttack
@@ -24,7 +27,11 @@ def init_attacks(names, **kwargs) -> list:
     return attack_list
 
 
+colorama_init()
+
 if __name__ == '__main__':
+    logging.basicConfig(format='%(levelname)s: %(message)s')
+
     parser = argparse.ArgumentParser(description='Exploit HTTP Host Header.')
     parser.add_argument('--thread', type=int, default=10,
                         help='Thread count.')

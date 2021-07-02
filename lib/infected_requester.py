@@ -1,5 +1,6 @@
-from requests import session, Response
 from typing import TypeVar
+
+from requests import session, Response
 
 ListResponses = TypeVar('ListResponses', Response, Response)
 

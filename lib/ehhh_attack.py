@@ -1,7 +1,10 @@
 from dataclasses import dataclass
+import logging
 from threading import Thread
 from time import sleep
 from queue import Queue
+
+from termcolor import cprint
 
 import lib.base_attack
 
@@ -13,13 +16,10 @@ class EhhhAttackTask:
     headers: dict
 
     def execute(self) -> None:
-        class_name = self.module.__class__.__name__
-        extends = f'Type: {class_name}, url: {self.url}, headers: {self.headers}.'
-
         if self.module.has_vulnerable(self.url, self.headers):
-            print(f'Vulnerable found! {extends}')
-        else:
-            print(f'Just normal response :( {extends}')
+            class_name = self.module.__class__.__name__
+            extends = f'Type: {class_name}, url: {self.url}, headers: {self.headers}.'
+            cprint(f'Hmm, non-standard behaviour! {self.module.get_vulnerable_text()} {extends}', 'green')
 
 
 class EhhhAttack:
@@ -35,7 +35,7 @@ class EhhhAttack:
             try:
                 task.execute()
             except Exception as e:
-                print(f'Exception {e}')
+                logging.warning(e)
             finally:
                 self._q.task_done()
 
