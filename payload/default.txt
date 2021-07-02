@@ -1,4 +1,4 @@
 localhost
 example.com
-example.com:/ehhh-inject
+example.com:ehhh-inject
 example.com/ehhh-inject
