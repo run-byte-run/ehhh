@@ -1,6 +1,6 @@
-from lib.base_attack import BaseAttack
+from lib.base_attack import WordlistAttack
 
 
-class FlawedAttack(BaseAttack):
+class FlawedAttack(WordlistAttack):
     def execute(self, url: str, payload: dict) -> None:
         pass
