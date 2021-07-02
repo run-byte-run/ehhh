@@ -47,7 +47,7 @@ class EhhhAttack:
             cprint(f'Remaining tasks: {qsize}', 'cyan')
 
     def run(self, urls: list, attacks: list) -> None:
-        cprint(f'Ehhh just run', 'cyan')
+        cprint(f'Ehhh just run...', 'cyan')
 
         for attack in attacks:
             for task in attack.generate_task(urls):
