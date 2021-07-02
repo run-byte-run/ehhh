@@ -13,7 +13,13 @@ class EhhhAttackTask:
     payload: dict
 
     def execute(self) -> None:
-        self.module.execute(self.url, self.payload)
+        class_name = self.module.__class__.__name__
+        extends = f'Type: {class_name}, url: {self.url}, payload: {self.payload}.'
+
+        if self.module.has_vulnerable(self.url, self.payload):
+            print(f'Vulnerable found! {extends}')
+        else:
+            print(f'Just normal response :( {extends}')
 
 
 class EhhhAttack:
@@ -29,7 +35,7 @@ class EhhhAttack:
             try:
                 task.execute()
             except Exception as e:
-                pass
+                print(f'Exception {e}')
             finally:
                 self._q.task_done()
 

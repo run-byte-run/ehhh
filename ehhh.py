@@ -33,6 +33,8 @@ if __name__ == '__main__':
                         help='Output into file instead of console.')
     parser.add_argument('-w', '--wordlist', type=str, default='payload/default.txt',
                         help='The path to file containing hostnames that will be used to attack payload.')
+    parser.add_argument('-H', '--header', nargs='*', type=str, default=[],
+                        help='The specific headers in request.')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--url', type=str, nargs='*',
                        help='Destination urls.')
@@ -47,6 +49,7 @@ if __name__ == '__main__':
     attacks = init_attacks(
         get_allow_attack() if 'all' in args.attack else args.attack,
         wordlist=DataLoader.load_from_file(args.wordlist),
+        headers=dict([x.replace(' ', '').split(':') for x in args.header])
     )
 
     ehhhAttack = EhhhAttack(thread=args.thread, wait=args.wait, output=args.output)
