@@ -9,7 +9,7 @@ class DataLoader:
 
         try:
             with open(filename, 'r') as f:
-                data = [line.strip('\r\n ') for line in f]
+                data = [line.strip() for line in f if line.strip()]
         except OSError as e:
             raise ValueError(f'Can\'t open/read file: {filename}.')
 
