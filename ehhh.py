@@ -5,6 +5,7 @@ from os import path
 
 from lib.data_loader import DataLoader
 from lib.ehhh_attack import EhhhAttack
+from lib.infected_requester import InfectedRequester
 
 
 def get_allow_attack() -> list:
@@ -42,15 +43,15 @@ if __name__ == '__main__':
                        help='Destination urls from file.')
     parser.add_argument('--attack', type=str, nargs='+', default='all', choices=get_allow_attack() + ['all'],
                         help='The attack names.')
-
     args = parser.parse_args()
 
+    headers = dict([x.replace(' ', '').split(':') for x in args.header])
     urls = DataLoader.load_from_file(args.URL) if args.URL else args.url
-    attacks = init_attacks(
-        get_allow_attack() if 'all' in args.attack else args.attack,
-        wordlist=DataLoader.load_from_file(args.wordlist),
-        headers=dict([x.replace(' ', '').split(':') for x in args.header])
-    )
+    attacks = init_attacks(get_allow_attack() if 'all' in args.attack else args.attack,
+                           infected_requester=InfectedRequester(headers),
+                           wordlist=DataLoader.load_from_file(args.wordlist))
 
-    ehhhAttack = EhhhAttack(thread=args.thread, wait=args.wait, output=args.output)
+    ehhhAttack = EhhhAttack(thread=args.thread,
+                            wait=args.wait,
+                            output=args.output)
     ehhhAttack.run(urls, attacks)

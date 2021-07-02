@@ -3,20 +3,20 @@ from threading import Thread
 from time import sleep
 from queue import Queue
 
-from lib.base_attack import BaseAttack
+import lib.base_attack
 
 
 @dataclass
 class EhhhAttackTask:
-    module: BaseAttack
+    module: lib.base_attack.BaseAttack
     url: str
-    payload: dict
+    headers: dict
 
     def execute(self) -> None:
         class_name = self.module.__class__.__name__
-        extends = f'Type: {class_name}, url: {self.url}, payload: {self.payload}.'
+        extends = f'Type: {class_name}, url: {self.url}, headers: {self.headers}.'
 
-        if self.module.has_vulnerable(self.url, self.payload):
+        if self.module.has_vulnerable(self.url, self.headers):
             print(f'Vulnerable found! {extends}')
         else:
             print(f'Just normal response :( {extends}')
@@ -41,7 +41,7 @@ class EhhhAttack:
 
     def run(self, urls: list, attacks: list) -> None:
         for attack in attacks:
-            for task in attack.generate_task(EhhhAttackTask, urls):
+            for task in attack.generate_task(urls):
                 self._q.put(task)
 
         for _ in range(self.settings.get('thread', 10)):
