@@ -37,7 +37,7 @@ class BaseAttack(ABC):
 class WordlistAttack(BaseAttack, ABC):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # todo: change error type, to disable attack when that error raised.
+        # todo: change error type to disable attack when that error raised.
         if 'wordlist' not in kwargs:
             raise ValueError(f'Invalid argument "wordlist" in __init__ "{self.__class__.__name__}" class.')
 
@@ -46,7 +46,7 @@ class WordlistAttack(BaseAttack, ABC):
 
     @staticmethod
     def get_vulnerable_text():
-        return 'Responses length missmatch!'
+        return 'Words mismatch in responses!'
 
     def generate_task(self, urls: list) -> list:
         tasks = []
@@ -61,7 +61,17 @@ class WordlistAttack(BaseAttack, ABC):
         pass
 
     def _is_vulnerable(self, regular_response: Response, infected_response: Response) -> bool:
-        if 400 <= infected_response.status_code < 500:
+        if 200 <= infected_response.status_code <= 302:
             return False
 
-        return len(regular_response.text) != len(infected_response.text)
+        return self._words_count(regular_response.text) != self._words_count(infected_response.text)
+
+    @classmethod
+    def _words_count(cls, text):
+        cls._strip_tags(text)
+
+        return len(text.split())
+
+    @staticmethod
+    def _strip_tags(text):
+        return re.sub('<script[^<]+</script>', '', text)
