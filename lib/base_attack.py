@@ -20,6 +20,10 @@ class BaseAttack(ABC):
 
         return self._is_vulnerable(rr, ir)
 
+    @property
+    def name(self):
+        return self.__class__.__name__
+
     @staticmethod
     @abstractmethod
     def get_vulnerable_text():

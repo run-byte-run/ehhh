@@ -24,12 +24,15 @@ class EhhhAttackTask:
 
 class EhhhAttack:
     def __init__(self, **settings: dict) -> None:
-        self.settings = settings
-        self._q = Queue()
+        self.settings = {**{
+            'thread': 10,
+            'wait': 0.1,
+        }, **settings}
+        self._q = Queue(self.settings['thread'] * 2)
 
     def do_task(self):
         while True:
-            sleep(self.settings.get('wait', 0.1))
+            sleep(self.settings['wait'])
 
             task = self._q.get()
             try:
@@ -49,13 +52,15 @@ class EhhhAttack:
     def run(self, urls: list, attacks: list) -> None:
         cprint(f'Ehhh just run...', 'cyan')
 
-        for attack in attacks:
-            for task in attack.generate_task(urls):
-                self._q.put(task)
-
-        cprint(f'Task counts: {self._q.qsize()}', 'cyan')
-
-        for _ in range(self.settings.get('thread', 10)):
+        for _ in range(self.settings['thread']):
             Thread(target=self.do_task, daemon=True).start()
 
-        self._q.join()
+        try:
+            for attack in attacks:
+                cprint(f'Attack: {attack.name}', 'cyan')
+                for task in attack.generate_task(urls):
+                    self._q.put(task)
+
+            self._q.join()
+        except KeyboardInterrupt:
+            cprint('Terminate...', 'cyan')
