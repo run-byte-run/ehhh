@@ -21,9 +21,10 @@ python ehhh.py --url https://31fda3e5180d68.web-security-academy.net/admin
 Console output will be like:
 ```console
 Ehhh just run...
-Task counts: 10
-Remaining tasks: 0
-Hmm, non-standard behaviour! Responses length missmatch! Type: FlawedAttack, url: https://31fda3e5180d68.web-security-academy.net, headers: {'host': 'localhost:ehhh-port'}.
-Hmm, non-standard behaviour! Responses length missmatch! Type: FlawedAttack, url: https://31fda3e5180d68.web-security-academy.net, headers: {'host': 'localhost'}.
+Module "lib.attacks.add_line generate task.
+Module "lib.attacks.bruteforce generate task.
+Module "lib.attacks.flawed generate task.
+Module "lib.attacks.x_header generate task.
+Task "BruteForceEhhhAttackTask" with "host: localhost" may be vulnerability!
 ```
 So that means if we replace Host-header to `Host: localhost` response will change. Try it out ;)   

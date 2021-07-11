@@ -1,21 +1,11 @@
-from lib.base_attack import WordlistAttack
-import lib.ehhh_attack
+import typing
 
-SUFFIX_LIST = ['', ':ehhh-port', '/ehhh-stuff']
+from lib.ehhh_attack import InjectionEhhhAttackTask
 
 
-class FlawedAttack(WordlistAttack):
-    @staticmethod
-    def _get_inject_headers(url: str, host: str) -> dict:
-        return {'host': host}
+class FlawedEhhhAttackTask(InjectionEhhhAttackTask):
+    pass
 
-    def generate_task(self, urls: list) -> list:
-        tasks = []
-        for host in self._wordlist:
-            for url in urls:
-                for suffix in SUFFIX_LIST:
-                    tasks.append(lib.ehhh_attack.EhhhAttackTask(self,
-                                                                url,
-                                                                self._get_inject_headers(url, host + suffix))
-                                 )
-        return tasks
+
+def generate_task(urls: list, **kwargs) -> typing.Iterator[FlawedEhhhAttackTask]:
+    yield from FlawedEhhhAttackTask.generate_task(urls)

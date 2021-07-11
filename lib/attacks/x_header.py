@@ -1,9 +1,11 @@
-from lib.base_attack import WordlistAttack
+import typing
+
+from lib.ehhh_attack import InjectionEhhhAttackTask
 
 
-class XHeaderAttack(WordlistAttack):
+class XHeaderAttackTask(InjectionEhhhAttackTask):
     @staticmethod
-    def _get_inject_headers(url: str, host: str) -> dict:
+    def _prepare_headers(host: str) -> dict:
         return {
             'x-host': host,
             'x-forwarded-host': host,
@@ -12,3 +14,7 @@ class XHeaderAttack(WordlistAttack):
             'x-http-host-override': host,
             'forwarded': host,
         }
+
+
+def generate_task(urls: list, **kwargs) -> typing.Iterator[XHeaderAttackTask]:
+    yield from XHeaderAttackTask.generate_task(urls)

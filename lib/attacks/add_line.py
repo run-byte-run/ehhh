@@ -1,7 +1,13 @@
-from lib.base_attack import WordlistAttack
+import typing
+
+from lib.ehhh_attack import InjectionEhhhAttackTask
 
 
-class AddLineAttack(WordlistAttack):
+class AddLineEhhhAttackTask(InjectionEhhhAttackTask):
     @staticmethod
-    def _get_inject_headers(url: str, host: str) -> dict:
+    def _prepare_headers(host: str) -> dict:
         return {' host': host}
+
+
+def generate_task(urls: list, **kwargs) -> typing.Iterator[InjectionEhhhAttackTask]:
+    yield from AddLineEhhhAttackTask.generate_task(urls)

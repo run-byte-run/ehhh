@@ -27,15 +27,12 @@ def get_allow_attack() -> list:
     return [path.basename(f)[:-3] for f in glob(pattern)]
 
 
-def init_attacks(names, **kwargs) -> list:
-    attack_list = []
+def load_modules(names) -> list:
+    modules = []
     for module_name in names:
-        module = importlib.import_module('.' + module_name, 'lib.attacks')
-        class_name = ''.join(x.title() for x in module_name.split('_') + ['attack'])
-        _class = getattr(module, class_name)
-        attack_list.append(_class(**kwargs))
+        modules.append(importlib.import_module('.' + module_name, 'lib.attacks'))
 
-    return attack_list
+    return modules
 
 
 colorama_init()
@@ -71,11 +68,11 @@ if __name__ == '__main__':
 
     headers = dict([x.replace(' ', '').split(':') for x in args.header])
     urls = DataLoader.load_from_file(args.URL) if args.URL else args.url
-    attacks = init_attacks(get_allow_attack() if 'all' in args.attack else args.attack,
-                           infected_requester=InfectedRequester(headers),
-                           wordlist=DataLoader.load_from_file(args.wordlist))
+    modules = load_modules(get_allow_attack() if 'all' in args.attack else args.attack)
 
-    ehhhAttack = EhhhAttack(thread=args.thread,
+    ehhhAttack = EhhhAttack(InfectedRequester(headers),
+                            thread=args.thread,
                             wait=args.wait,
                             output=args.output)
-    ehhhAttack.run(urls, attacks)
+    ehhhAttack.run(urls, modules,
+                   wordlist=DataLoader.load_from_file(args.wordlist))
