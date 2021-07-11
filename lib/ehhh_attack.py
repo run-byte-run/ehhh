@@ -9,6 +9,7 @@ import typing
 from queue import Queue
 
 from requests import Response
+from requests.exceptions import RequestException
 from termcolor import cprint
 
 from lib.infected_requester import InfectedRequester
@@ -73,8 +74,7 @@ class EhhhAttack:
             try:
                 if task.execute(self.infected_requester):
                     cprint(f'Task "{task.name}" with "host: {task.host}" may be vulnerability!', 'green')
-
-            except Exception as e:
+            except RequestException as e:
                 logging.warning(e)
             finally:
                 self._q.task_done()
