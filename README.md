@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ## Usage
 So let's try to solve [this lab.](https://portswigger.net/web-security/host-header/exploiting/lab-host-header-authentication-bypass) 
 ```bash
-python ehhh.py --url https://31fda3e5180d68.web-security-academy.net/admin
+python ehhh.py --url https://%hash%.web-security-academy.net/admin
 ```
 Console output will be like:
 ```console
