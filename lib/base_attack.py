@@ -72,10 +72,10 @@ class WordlistAttack(BaseAttack, ABC):
 
     @classmethod
     def _words_count(cls, text):
-        cls._strip_tags(text)
+        stripped = cls._strip_tags(text)
 
-        return len(text.split())
+        return len(stripped.split())
 
     @staticmethod
     def _strip_tags(text):
-        return re.sub('<script[^<]+</script>', '', text)
+        return re.sub('<(script|style)[^<]+</(script|style)>', '', text)
