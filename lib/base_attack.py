@@ -65,7 +65,7 @@ class WordlistAttack(BaseAttack, ABC):
         pass
 
     def _is_vulnerable(self, regular_response: Response, infected_response: Response) -> bool:
-        if 200 <= infected_response.status_code <= 302:
+        if infected_response.status_code < 200 or infected_response.status_code > 303:
             return False
 
         return self._words_count(regular_response.text) != self._words_count(infected_response.text)
