@@ -8,7 +8,7 @@ from os import path
 from colorama import init as colorama_init
 from termcolor import cprint
 
-from lib.data_loader import DataLoader
+from lib.data_loader import DataLoader, BruteforceWordlistLoader
 from lib.ehhh_attack import EhhhAttack
 from lib.infected_requester import InfectedRequester
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                         help='Seconds timeout before each task.')
     parser.add_argument('-o', '--output', type=str,
                         help='Output into file instead of console.')
-    parser.add_argument('-w', '--wordlist', type=str, default='payload/default.txt',
+    parser.add_argument('-w', '--wordlist', type=str, default='payload/bruteforce.txt',
                         help='The path to file containing hostnames that will be used to attack payload.')
     parser.add_argument('-H', '--header', nargs='*', type=str, default=[],
                         help='The specific headers in request.')
@@ -75,4 +75,4 @@ if __name__ == '__main__':
                             wait=args.wait,
                             output=args.output)
     ehhhAttack.run(urls, modules,
-                   wordlist=DataLoader.load_from_file(args.wordlist))
+                   wordlist=BruteforceWordlistLoader.load_from_file(args.wordlist))
